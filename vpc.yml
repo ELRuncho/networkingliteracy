@@ -139,16 +139,9 @@ Resources:
 
   Subnet2BRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
-    DependsOn: Subnet1BRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTableB
       SubnetId: !Ref Subnet2B
-
-  Subnet1BRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTableB
-      SubnetId: !Ref Subnet1B
 
   Subnet1C:
     Type: AWS::EC2::Subnet
@@ -187,12 +180,6 @@ Resources:
       RouteTableId: !Ref PublicRouteTableC
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGatewayC
-
-  Subnet2CRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTableC
-      SubnetId: !Ref Subnet2C
 
   Subnet1CRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
