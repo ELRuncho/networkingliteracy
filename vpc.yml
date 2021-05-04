@@ -1,0 +1,213 @@
+Description: >
+  Este template crea la VpcB y VpcC para los laboratorios de networking
+Parameters:
+  EnvironmentName:
+    Description: Un nombre que servira como prefijo para los recursos
+    Type: String
+
+  VpcBCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para esta VPC
+    Type: String
+    Default: 10.1.0.0/16
+
+  Subnet1BCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para la subred publica en la Zona de Disponibilidad 1 (AZ1-VpcB)
+    Type: String
+    Default: 10.1.0.0/24
+
+  Subnet2BCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para la subred privada en la Zona de Disponibilidad 2 (AZ2-VpcB)
+    Type: String
+    Default: 10.1.1.0/24
+
+  VpcCCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para esta VPC
+    Type: String
+    Default: 10.2.0.0/16
+
+  Subnet1CCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para la subred publica en la Zona de Disponibilidad 1 (AZ-VpcC)
+    Type: String
+    Default: 10.2.0.0/24
+
+  Subnet2CCIDR:
+    Description: Ingresa el rango IP (notacion CIDR) para la subred publica en la Zona de Disponibilidad 1 (AZ2-VpcC)
+    Type: String
+    Default: 10.2.1.0/24
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - 
+        Label:
+          default: "Configuracion VpcB"
+        Parameters:
+          - VpcBCIDR
+          - Subnet1BCIDR
+          - Subnet2BCIDR
+      - 
+        Label:
+          default: "Configuracion VpcC"
+        Parameters:
+          - VpcCCIDR
+          - Subnet1CCIDR
+          - Subnet2CCIDR
+
+Resources:
+
+  VPCB:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcBCIDR
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcB
+
+  VPCC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCCIDR
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcC
+
+  InternetGatewayB:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: gatewayb
+
+  InternetGatewayC:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: gatwayc
+
+  InternetGatewayBAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGatewayB
+      VpcId: !Ref VPCB
+
+  InternetGatewayCAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGatewayC
+      VpcId: !Ref VPCC
+
+  Subnet1B:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPCB
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      CidrBlock: !Ref Subnet1BCIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcB-Subnet1 (AZ1)
+
+  Subnet2B:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPCB
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Ref Subnet2BCIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcB-Subnet2 (AZ2)
+
+  PublicRouteTableB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPCB
+      Tags:
+        - Key: Name
+          Value: Public Routes VPCB
+
+  DefaultPublicRouteB:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayBAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTableB
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGatewayB
+
+  Subnet1BRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTableB
+      SubnetId: !Ref Subnet1B
+
+  Subnet1C:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPCC
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      CidrBlock: !Ref Subnet1CCIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcC-Subnet1 (AZ1)
+
+  Subnet2C:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPCC
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Ref Subnet2CCIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-vpcC-Subnet2 (AZ2)
+
+  PublicRouteTableC:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPCC
+      Tags:
+        - Key: Name
+          Value: Public Routes VPCC
+
+  DefaultPublicRouteC:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayCAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTableC
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGatewayC
+
+  Subnet1CRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTableC
+      SubnetId: !Ref Subnet1C
+
+Outputs:
+  VPCB:
+    Description: La VPCB
+    Value: !Ref VPCB
+
+  VPCC:
+    Description: La VPCC
+    Value: !Ref VPCC
+
+  PublicSubnetsB:
+    Description: Subnet Publica VPCB
+    Value: !Ref Subnet1B
+
+  PrivateSubnetsB:
+    Description: Subnet Privada VPCB
+    Value: !Ref Subnet2B
+
+  PublicSubnetC:
+    Description: Subnet publica VPCC
+    Value: !Ref Subnet1C
+
+  PrivateSubnetC:
+    Description: Subnet rivada VPCC
+    Value: !Ref Subnet2C

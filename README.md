@@ -1,2 +1,10 @@
-# networkingliteracy
-Este template despliega dos vpc simples cada una con dos subredes
+Puedes desplegar este template en tu cuenta de aws en alguna de las siguientes regiones. Asegurate de que el nombre del stack este todo en minusculas
+
+| AWS Region Code | Name | Launch |
+| --- | --- | --- 
+| us-east-1 |US East (N. Virginia)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
+| us-east-2 |US East (Ohio)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
+| us-west-2 |US West (Oregon)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
+| eu-west-1 |EU (Ireland)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
+| eu-central-1 |EU (Frankfurt)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
+| ap-southeast-2 |AP (Sydney)| [![cloudformation-launch-stack](images/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=ap-southeast-2#/stacks/new?stackName=serverlessnumbers&templateURL=https://literacyworkshop2021.s3-eu-west-1.amazonaws.com/vpc.yml) |
