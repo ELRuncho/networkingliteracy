@@ -143,6 +143,12 @@ Resources:
       RouteTableId: !Ref PublicRouteTableB
       SubnetId: !Ref Subnet1B
 
+  Subnet2BRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTableB
+      SubnetId: !Ref Subnet2B
+
   Subnet1C:
     Type: AWS::EC2::Subnet
     Properties:
@@ -186,6 +192,13 @@ Resources:
     Properties:
       RouteTableId: !Ref PublicRouteTableC
       SubnetId: !Ref Subnet1C
+
+  Subnet2CRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTableC
+      SubnetId: !Ref Subnet2C
+
 
 Outputs:
   VPCB:
